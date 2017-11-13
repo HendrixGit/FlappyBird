@@ -38,15 +38,20 @@ public class FlappyBird extends ApplicationAdapter {
 		variacao += Gdx.graphics.getDeltaTime() * 2;//calcula a diferenca de execuacao do render
 		if (variacao > 2){ variacao = 0; }
 
-		velocidadeQueda ++;
-		if (posicaoInicialVertical > 0){
+		velocidadeQueda++;
+		if ((posicaoInicialVertical > 0) || (velocidadeQueda < 0)) {
 			posicaoInicialVertical = posicaoInicialVertical - velocidadeQueda;
+		}
+
+		if (Gdx.input.justTouched()){
+				velocidadeQueda = -15;
+				Gdx.app.log("Toque", "Toque na Tela");
 		}
 
 		batch.begin();//inicia a exibicai das imagnes
 
 		batch.draw(fundo,0,0,larguraDispositivo,alturaDispositivo);//Colocando e ajeitando o fundo
-		batch.draw(passaros[ (int) variacao],30,posicaoInicialVertical);
+		batch.draw(passaros[ (int) variacao],30,posicaoInicialVertical);//desenha o passaro
 
 		batch.end();
 	}
