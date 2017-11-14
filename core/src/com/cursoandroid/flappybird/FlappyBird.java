@@ -47,7 +47,7 @@ public class FlappyBird extends ApplicationAdapter {
 		alturaDispositivo  =  Gdx.graphics.getHeight();
 		posicaoInicialVertical = alturaDispositivo / 2;
 		posicaoMovimentoCanoHorizontal = larguraDispositivo - 100;
-		espacoEntreCanos = 200;
+		espacoEntreCanos = 300;
 	}
 
 
@@ -74,15 +74,14 @@ public class FlappyBird extends ApplicationAdapter {
 
 		if (posicaoMovimentoCanoHorizontal < -canoTopo.getWidth()){//reinicia os canos ao sair da tela
 			posicaoMovimentoCanoHorizontal = larguraDispositivo;//reinicia os canos fora da tela
-
-			alturaEntreCanosRandomica = numeroRandomico.nextInt(600) - 300;//gera numeros positivos entre 1 e 400 para p cano subir e descer
+			alturaEntreCanosRandomica = numeroRandomico.nextInt(400) - 200;//gera numeros positivos entre 1 e 400 para p cano subir e descer
 
 		}
 
 		batch.begin();//inicia a exibicai das imagnes
 
 		batch.draw(fundo,0,0,larguraDispositivo,alturaDispositivo);//Colocando e ajeitando o fundo
-		batch.draw(canoTopo,posicaoMovimentoCanoHorizontal,alturaDispositivo / 2 + espacoEntreCanos + alturaEntreCanosRandomica);
+		batch.draw(canoTopo,posicaoMovimentoCanoHorizontal,alturaDispositivo / 2 + espacoEntreCanos / 2 + alturaEntreCanosRandomica);
 		batch.draw(canoBaixo,posicaoMovimentoCanoHorizontal, alturaDispositivo / 2 - canoBaixo.getHeight() - espacoEntreCanos /2 + alturaEntreCanosRandomica);
 		batch.draw(passaros[ (int) variacao],120,posicaoInicialVertical);//desenha o passaro
 
