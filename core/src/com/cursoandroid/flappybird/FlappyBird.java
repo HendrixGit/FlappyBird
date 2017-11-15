@@ -8,7 +8,15 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.particles.influencers.ColorInfluencer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Circle;
+import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.physics.box2d.Shape;
 
+import java.awt.AWTEventMulticaster;
+import java.awt.Button;
+import java.awt.event.InputMethodEvent;
+import java.awt.event.InputMethodListener;
 import java.util.Random;
 
 public class FlappyBird extends ApplicationAdapter {
@@ -17,6 +25,11 @@ public class FlappyBird extends ApplicationAdapter {
 	private  Texture canoTopo;
 	private  Texture canoBaixo;
     private  Texture logo;
+
+	private Circle passaroCirculo;
+	private Rectangle retanguloCanoTopo;
+	private Rectangle retanguloCanoBaixo;
+	private ShapeRenderer shape;//desneha as formas
 
 	private  Texture fundo;
 	private float variacao = 0;
@@ -45,6 +58,10 @@ public class FlappyBird extends ApplicationAdapter {
 		passaros[1] = new Texture("passaro2.png");
 		passaros[2] = new Texture("passaro1.png");
 
+		passaroCirculo = new Circle();//formas para as colisoes
+		retanguloCanoBaixo = new Rectangle();
+		retanguloCanoTopo  = new Rectangle();
+		shape = new ShapeRenderer();
 
 		fundo   = new Texture("fundo.png");
         logo    = new Texture("logo.png");
@@ -114,13 +131,37 @@ public class FlappyBird extends ApplicationAdapter {
 		batch.draw(canoTopo, posicaoMovimentoCanoHorizontal, alturaDispositivo / 2 + espacoEntreCanos / 2 + alturaEntreCanosRandomica);
 		batch.draw(canoBaixo, posicaoMovimentoCanoHorizontal, alturaDispositivo / 2 - canoBaixo.getHeight() - espacoEntreCanos / 2 + alturaEntreCanosRandomica);
 		batch.draw(passaros[(int) variacao], 120, posicaoInicialVertical);//desenha o passaro
-        fonte.draw(batch, String.valueOf(pontuacao), larguraDispositivo / 2, alturaDispositivo - 50);
 
         if (estadoJogo == 0){
             batch.draw(logo, 200, posicaoInicialVertical + 300);
         }
+        else{
+            fonte.draw(batch, String.valueOf(pontuacao), larguraDispositivo / 2, alturaDispositivo - 50);
+        }
 
 		batch.end();
+
+		//colisoes
+		retanguloCanoBaixo = new Rectangle(//x,y largura e altura para criar a forma para o cano
+			posicaoMovimentoCanoHorizontal,
+			alturaDispositivo / 2 - canoBaixo.getHeight() - espacoEntreCanos / 2 + alturaEntreCanosRandomica,
+			canoBaixo.getWidth(), canoBaixo.getHeight()
+		);
+
+		retanguloCanoTopo = new Rectangle(
+			posicaoMovimentoCanoHorizontal,
+			alturaDispositivo / 2 + espacoEntreCanos / 2 + alturaEntreCanosRandomica,
+			canoTopo.getWidth(), canoTopo.getHeight()
+		);
+
+		passaroCirculo.set(120 + passaros[0].getWidth() / 2, posicaoInicialVertical + passaros[0].getHeight() / 2 , passaros[0].getWidth() / 2);//desenha a forma em cima do passaro 120 mais a metade da largura do passaro
+		//desenhar formas para as colisoes																			raio do circulo
+		shape.begin(ShapeRenderer.ShapeType.Filled);//shape tipo preenchido
+			shape.circle(passaroCirculo.x,passaroCirculo.y,passaroCirculo.radius);
+			shape.setColor(Color.RED);
+			shape.rect(retanguloCanoBaixo.x, retanguloCanoBaixo.y, retanguloCanoBaixo.width, retanguloCanoBaixo.height);
+			shape.rect(retanguloCanoTopo.x, retanguloCanoTopo.y, retanguloCanoTopo.width, retanguloCanoTopo.height);
+		shape.end();
 	}
 
 }
