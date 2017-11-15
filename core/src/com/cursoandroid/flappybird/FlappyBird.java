@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.particles.influencers.ColorInfluencer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Circle;
+import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.Shape;
 
@@ -29,7 +30,6 @@ public class FlappyBird extends ApplicationAdapter {
 	private Circle passaroCirculo;
 	private Rectangle retanguloCanoTopo;
 	private Rectangle retanguloCanoBaixo;
-	private ShapeRenderer shape;//desneha as formas
 
 	private  Texture fundo;
 	private float variacao = 0;
@@ -59,9 +59,6 @@ public class FlappyBird extends ApplicationAdapter {
 		passaros[2] = new Texture("passaro1.png");
 
 		passaroCirculo = new Circle();//formas para as colisoes
-		retanguloCanoBaixo = new Rectangle();
-		retanguloCanoTopo  = new Rectangle();
-		shape = new ShapeRenderer();
 
 		fundo   = new Texture("fundo.png");
         logo    = new Texture("logo.png");
@@ -105,7 +102,6 @@ public class FlappyBird extends ApplicationAdapter {
 			if (Gdx.input.justTouched()) {//toque na tela faz o passaro voar
 				if (alturaDispositivo - 100 > posicaoInicialVertical) {
 					velocidadeQueda = -15;
-					Gdx.app.log("Toque", "Toque na Tela");
 				}
 
 			}
@@ -155,13 +151,11 @@ public class FlappyBird extends ApplicationAdapter {
 		);
 
 		passaroCirculo.set(120 + passaros[0].getWidth() / 2, posicaoInicialVertical + passaros[0].getHeight() / 2 , passaros[0].getWidth() / 2);//desenha a forma em cima do passaro 120 mais a metade da largura do passaro
-		//desenhar formas para as colisoes																			raio do circulo
-		shape.begin(ShapeRenderer.ShapeType.Filled);//shape tipo preenchido
-			shape.circle(passaroCirculo.x,passaroCirculo.y,passaroCirculo.radius);
-			shape.setColor(Color.RED);
-			shape.rect(retanguloCanoBaixo.x, retanguloCanoBaixo.y, retanguloCanoBaixo.width, retanguloCanoBaixo.height);
-			shape.rect(retanguloCanoTopo.x, retanguloCanoTopo.y, retanguloCanoTopo.width, retanguloCanoTopo.height);
-		shape.end();
+		//Teste de colisao
+		if ((Intersector.overlaps(passaroCirculo,retanguloCanoBaixo)) || (Intersector.overlaps(passaroCirculo,retanguloCanoTopo))) {
+			Gdx.app.log("Colisao","Houve uma Colisao");
+
+		}
 	}
 
 }
