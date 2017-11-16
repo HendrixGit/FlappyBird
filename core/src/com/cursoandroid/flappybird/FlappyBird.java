@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Circle;
@@ -102,15 +103,16 @@ public class FlappyBird extends ApplicationAdapter {
         viewport = new StretchViewport(VIRTUAL_WIDTH, VIRTUAL_HEIGHT, camera);//largura, altura e camera utiliazada no viewport resolucao generica para todos so dispositivos
 
         stage = new Stage();
+        stage.setViewport(viewport);
         imagemBotaoJogar = new Image(new Texture(Gdx.files.internal("botaojogar.png")));
         imagemBotaoJogar.setPosition(250, posicaoInicialVertical + 180);
+        imagemBotaoJogar.setSize(300, 80);
         imagemBotaoJogar.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 estadoJogo = 1;
             }
         });
-
         stage.addActor(imagemBotaoJogar);
         Gdx.input.setInputProcessor(stage);
 	}
@@ -181,8 +183,8 @@ public class FlappyBird extends ApplicationAdapter {
             batch.draw(passaros[(int) variacao], 120, posicaoInicialVertical);//desenha o passaro
 
             if (estadoJogo == 0){
-                imagemBotaoJogar.draw(batch,1);//desenhando botao jogar
                 batch.draw(logo, 200, posicaoInicialVertical + 300);
+                imagemBotaoJogar.draw(batch,1);//desenhando botao jogar
             }
             else {
                 if (estadoJogo == 2) {
