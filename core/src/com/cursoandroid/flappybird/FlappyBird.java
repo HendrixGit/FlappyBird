@@ -3,21 +3,17 @@ package com.cursoandroid.flappybird;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g3d.particles.influencers.ColorInfluencer;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.physics.box2d.Shape;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
-import java.awt.AWTEventMulticaster;
-import java.awt.Button;
-import java.awt.event.InputMethodEvent;
-import java.awt.event.InputMethodListener;
 import java.util.Random;
 
 public class FlappyBird extends ApplicationAdapter {
@@ -27,7 +23,9 @@ public class FlappyBird extends ApplicationAdapter {
 	private  Texture canoBaixo;
     private  Texture logo;
     private  Texture gameOver;
-    private  Texture botaoJogar;
+
+    private  Stage stage;
+    private  Image imagemBotaoJogar;
 
 	private Circle passaroCirculo;
 	private Rectangle retanguloCanoTopo;
@@ -68,7 +66,6 @@ public class FlappyBird extends ApplicationAdapter {
 		canoBaixo = new Texture("cano_baixo.png");
 		canoTopo  = new Texture("cano_topo.png");
         gameOver  = new Texture("game_over.png");
-        botaoJogar = new Texture("botaojogar.png");
         fonte = new BitmapFont();//Placar
         fonte.setColor(Color.WHITE);
         fonte.getData().setScale(6);//tamando fonte
@@ -82,24 +79,32 @@ public class FlappyBird extends ApplicationAdapter {
 		posicaoInicialVertical = alturaDispositivo / 2;
 		posicaoMovimentoCanoHorizontal = larguraDispositivo - 100;
 		espacoEntreCanos = 300;
+
+        stage = new Stage();
+        imagemBotaoJogar = new Image(new Texture(Gdx.files.internal("botaojogar.png")));
+        imagemBotaoJogar.setPosition(250, posicaoInicialVertical + 180);
+        imagemBotaoJogar.addListener( new ClickListener() {//evento botao jogar
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                estadoJogo = 1;
+            }
+        });
+
+        stage.addActor(imagemBotaoJogar);
+        Gdx.input.setInputProcessor(stage);
 	}
 
 
 	@Override
 	public void render() {//chamando animacoes
-
 		deltaTime = Gdx.graphics.getDeltaTime();//movimento asa passaro
 		variacao += deltaTime * 2;//calcula a diferenca de execuacao do render
         if (variacao > 2) {
             variacao = 0;
         }
 
-		if (estadoJogo == 0) {//verifica se o jogo foi iniciado
-			if (Gdx.input.justTouched()){
-				estadoJogo = 1;
-			}
-		}
-		else {
+
+        if (estadoJogo != 0) {
             velocidadeQueda++; // queda do passaro
             if ((posicaoInicialVertical > 0) || (velocidadeQueda < 0)) {
                 posicaoInicialVertical = posicaoInicialVertical - velocidadeQueda;
@@ -141,6 +146,7 @@ public class FlappyBird extends ApplicationAdapter {
             }
 		}
 
+
 		batch.begin();//inicia a exibicao das imagnes
 
             batch.draw(fundo, 0, 0, larguraDispositivo, alturaDispositivo);//Colocando e ajeitando o fundo
@@ -149,6 +155,7 @@ public class FlappyBird extends ApplicationAdapter {
             batch.draw(passaros[(int) variacao], 120, posicaoInicialVertical);//desenha o passaro
 
             if (estadoJogo == 0){
+                imagemBotaoJogar.draw(batch,1);//desenhando botao jogar
                 batch.draw(logo, 200, posicaoInicialVertical + 300);
             }
             else {
