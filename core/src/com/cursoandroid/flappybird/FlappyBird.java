@@ -27,6 +27,7 @@ public class FlappyBird extends ApplicationAdapter {
 	private  Texture canoBaixo;
     private  Texture logo;
     private  Texture gameOver;
+    private  Texture botaoJogar;
 
 	private Circle passaroCirculo;
 	private Rectangle retanguloCanoTopo;
@@ -67,6 +68,7 @@ public class FlappyBird extends ApplicationAdapter {
 		canoBaixo = new Texture("cano_baixo.png");
 		canoTopo  = new Texture("cano_topo.png");
         gameOver  = new Texture("game_over.png");
+        botaoJogar = new Texture("botaojogar.png");
         fonte = new BitmapFont();//Placar
         fonte.setColor(Color.WHITE);
         fonte.getData().setScale(6);//tamando fonte
