@@ -65,7 +65,7 @@ public class FlappyBird extends ApplicationAdapter {
     private OrthographicCamera camera;
     private Viewport viewport;//ocupa o tamanho da tela
     private final float VIRTUAL_WIDTH  = 768;
-    private final float VIRTUAL_HEIGHT = 1184;
+    private final float VIRTUAL_HEIGHT = 1024;
 
 
 	@Override
