@@ -29,7 +29,10 @@ public class FlappyBird extends ApplicationAdapter {
     private  Texture gameOver;
 
     private  Stage stage;
+    private  Stage stage2;
     private  Image imagemBotaoJogar;
+    private  Image imagemBotaoReiniciar;
+    private  Image imagemBotaoMenu;
 
 	private Circle passaroCirculo;
 	private Rectangle retanguloCanoTopo;
@@ -96,21 +99,70 @@ public class FlappyBird extends ApplicationAdapter {
 
         stage = new Stage();
         stage.setViewport(viewport);
+
         imagemBotaoJogar = new Image(new Texture(Gdx.files.internal("botaojogar.png")));
         imagemBotaoJogar.setPosition(250, posicaoInicialVertical + 180);
         imagemBotaoJogar.setSize(300, 80);
+        clickBotaoJogar();
+        stage.addActor(imagemBotaoJogar);
+
+        imagemBotaoReiniciar = new Image(new Texture(Gdx.files.internal("botaoreiniciar.png")));
+        imagemBotaoReiniciar.setPosition(larguraDispositivo / 2 - imagemBotaoReiniciar.getWidth() / 2, alturaDispositivo / 2 - 100);
+        imagemBotaoReiniciar.setSize(300, 80);
+        stage.addActor(imagemBotaoReiniciar);
+
+        imagemBotaoMenu = new Image(new Texture(Gdx.files.internal("botaomenu.png")));
+        imagemBotaoMenu.setPosition(larguraDispositivo / 2 - imagemBotaoReiniciar.getWidth() / 2, alturaDispositivo / 2 - 200);
+        imagemBotaoMenu.setSize(300, 80);
+        stage.addActor(imagemBotaoMenu);
+
+        Gdx.input.setInputProcessor(stage);
+	}
+
+    private void clickBotaoMenu() {
+        imagemBotaoMenu.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                estadoJogo = 0;
+                resetaValores();
+                clickBotaoJogar();
+                imagemBotaoMenu.clearListeners();
+                imagemBotaoReiniciar.clearListeners();
+            }
+        });
+    }
+
+    private void resetaValores() {
+        marcouPonto = false;
+        pontuacao  = 0;
+        velocidadeQueda = 0;
+        posicaoInicialVertical = alturaDispositivo / 2;
+        posicaoMovimentoCanoHorizontal = larguraDispositivo;
+    }
+
+    private void clickBotaoJogar() {
         imagemBotaoJogar.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 estadoJogo = 1;
+                imagemBotaoJogar.clearListeners();
+                imagemBotaoReiniciar.clearListeners();
             }
         });
-        stage.addActor(imagemBotaoJogar);
-        Gdx.input.setInputProcessor(stage);
-	}
+    }
 
+    private void clickBotaoReiniciar() {
+        imagemBotaoReiniciar.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                estadoJogo = 1;
+                resetaValores();
+                imagemBotaoReiniciar.clearListeners();
+            }
+        });
+    }
 
-	@Override
+    @Override
 	public void render() {//chamando animacoes
         camera.update();//atualiza os valores da camera
 
@@ -153,12 +205,7 @@ public class FlappyBird extends ApplicationAdapter {
             }
             else{//game over
                    if (Gdx.input.justTouched()){//reinicia o jogo
-                       estadoJogo = 1;
-                       marcouPonto = false;
-                       pontuacao  = 0;
-                       velocidadeQueda = 0;
-                       posicaoInicialVertical = alturaDispositivo / 2;
-                       posicaoMovimentoCanoHorizontal = larguraDispositivo;
+
                 }
             }
 		}
@@ -179,7 +226,10 @@ public class FlappyBird extends ApplicationAdapter {
             else {
                 if (estadoJogo == 2) {
                     batch.draw(gameOver, larguraDispositivo / 2 - gameOver.getWidth() / 2, alturaDispositivo / 2);
-                    mensagem.draw(batch, "Toque para Reiniciar" ,larguraDispositivo / 2 - 200, alturaDispositivo / 2 - gameOver.getHeight() / 2);
+                    imagemBotaoReiniciar.draw(batch ,1);
+                    imagemBotaoMenu.draw(batch,1);
+                    clickBotaoReiniciar();
+                    clickBotaoMenu();
                 }
                 fonte.draw(batch, String.valueOf(pontuacao), larguraDispositivo / 2, alturaDispositivo - 50);
             }
