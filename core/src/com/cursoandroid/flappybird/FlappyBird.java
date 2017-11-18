@@ -142,9 +142,7 @@ public class FlappyBird extends ApplicationAdapter {
                 posicaoMovimentoCanoHorizontal -= deltaTime * 200;//movimento dos canos
 
                 if (Gdx.input.justTouched()) {//toque na tela faz o passaro voar
-                    if (alturaDispositivo - 100 > posicaoInicialVertical) {
                         velocidadeQueda = -15;
-                    }
                 }
 
                 if (posicaoMovimentoCanoHorizontal < -canoTopo.getWidth()) {//reinicia os canos ao sair da tela
