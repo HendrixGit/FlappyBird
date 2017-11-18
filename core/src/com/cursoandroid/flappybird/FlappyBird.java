@@ -154,11 +154,11 @@ public class FlappyBird extends ApplicationAdapter {
             else{//game over
                    if (Gdx.input.justTouched()){//reinicia o jogo
                        estadoJogo = 1;
+                       marcouPonto = false;
                        pontuacao  = 0;
                        velocidadeQueda = 0;
                        posicaoInicialVertical = alturaDispositivo / 2;
                        posicaoMovimentoCanoHorizontal = larguraDispositivo;
-
                 }
             }
 		}
