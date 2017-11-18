@@ -6,25 +6,17 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.Scaling;
-import com.badlogic.gdx.utils.viewport.ExtendViewport;
-import com.badlogic.gdx.utils.viewport.FillViewport;
-import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.sun.prism.image.ViewPort;
 
 import java.util.Random;
 
@@ -133,7 +125,7 @@ public class FlappyBird extends ApplicationAdapter {
 
         if (estadoJogo != 0) {
             velocidadeQueda++; // queda do passaro
-            if ((posicaoInicialVertical > 0) || (velocidadeQueda < 0)) {
+            if (((posicaoInicialVertical > 0) || (velocidadeQueda < 0)) && (estadoJogo != 2)) {
                 posicaoInicialVertical = posicaoInicialVertical - velocidadeQueda;
             }
 
@@ -145,7 +137,7 @@ public class FlappyBird extends ApplicationAdapter {
                         velocidadeQueda = -15;
                 }
 
-                if (posicaoMovimentoCanoHorizontal < -canoTopo.getWidth()) {//reinicia os canos ao sair da tela
+                if (posicaoMovimentoCanoHorizontal < - canoTopo.getWidth()) {//reinicia os canos ao sair da tela
                     posicaoMovimentoCanoHorizontal = larguraDispositivo;//reinicia os canos fora da tela
                     alturaEntreCanosRandomica = numeroRandomico.nextInt(400) - 200;//gera numeros positivos entre 1 e 400 para p cano subir e descer
                     marcouPonto = false;
