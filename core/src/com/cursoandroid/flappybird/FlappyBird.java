@@ -119,6 +119,14 @@ public class FlappyBird extends ApplicationAdapter {
         Gdx.input.setInputProcessor(stage);
 	}
 
+    private void resetaValores() {
+        marcouPonto = false;
+        pontuacao  = 0;
+        velocidadeQueda = 0;
+        posicaoInicialVertical = alturaDispositivo / 2;
+        posicaoMovimentoCanoHorizontal = larguraDispositivo;
+    }
+
     private void clickBotaoMenu() {
         imagemBotaoMenu.addListener(new ClickListener(){
             @Override
@@ -130,14 +138,6 @@ public class FlappyBird extends ApplicationAdapter {
                 imagemBotaoReiniciar.clearListeners();
             }
         });
-    }
-
-    private void resetaValores() {
-        marcouPonto = false;
-        pontuacao  = 0;
-        velocidadeQueda = 0;
-        posicaoInicialVertical = alturaDispositivo / 2;
-        posicaoMovimentoCanoHorizontal = larguraDispositivo;
     }
 
     private void clickBotaoJogar() {
