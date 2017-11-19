@@ -30,7 +30,6 @@ public class FlappyBird extends ApplicationAdapter {
     private  Texture gameOver;
 
     private  Stage stage;
-    private  Stage stage2;
     private  Image imagemBotaoJogar;
     private  Image imagemBotaoReiniciar;
     private  Image imagemBotaoMenu;
@@ -54,6 +53,8 @@ public class FlappyBird extends ApplicationAdapter {
     private BitmapFont mensagem;
     private int pontuacao = 0;
     private boolean marcouPonto = false;
+    private boolean clicksTelaMenu = true;
+    private boolean clicksTelaGameOver = false;
 
 	//Atributos de configuracao
 	private float larguraDispositivo = 0;
@@ -123,11 +124,13 @@ public class FlappyBird extends ApplicationAdapter {
         imagemBotaoReiniciar = new Image(new Texture(Gdx.files.internal("botaoreiniciar.png")));
         imagemBotaoReiniciar.setPosition(larguraDispositivo / 2 - imagemBotaoReiniciar.getWidth() / 2, alturaDispositivo / 2 - 100);
         imagemBotaoReiniciar.setSize(300, 80);
+        clickBotaoReiniciar();
         stage.addActor(imagemBotaoReiniciar);
 
         imagemBotaoMenu = new Image(new Texture(Gdx.files.internal("botaomenu.png")));
         imagemBotaoMenu.setPosition(larguraDispositivo / 2 - imagemBotaoReiniciar.getWidth() / 2, alturaDispositivo / 2 - 200);
         imagemBotaoMenu.setSize(300, 80);
+        clickBotaoMenu();
         stage.addActor(imagemBotaoMenu);
 
         Gdx.input.setInputProcessor(stage);
@@ -138,27 +141,21 @@ public class FlappyBird extends ApplicationAdapter {
         pontuacao  = 0;
         velocidadeQueda = 0;
         posicaoInicialVertical = alturaDispositivo / 2;
-        posicaoMovimentoCanoHorizontal = larguraDispositivo;
-    }
-
-    private void clickBotaoMenu() {
-        imagemBotaoMenu.addListener(new ClickListener(){
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                estadoJogo = 0;
-                resetaValores();
-                clickBotaoJogar();
-                imagemBotaoMenu.clearListeners();
-                imagemBotaoReiniciar.clearListeners();
-            }
-        });
+        if (estadoJogo != 0){//if feita para os canos aparecerem na tela de menu
+            posicaoMovimentoCanoHorizontal = larguraDispositivo;
+        }
+        else{
+            posicaoMovimentoCanoHorizontal = larguraDispositivo - 100;
+        }
     }
 
     private void clickBotaoSair() {
         imagemBotaoSair.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                Gdx.app.exit();
+                if (clicksTelaMenu == true) {
+                    Gdx.app.exit();
+                }
             }
         });
     }
@@ -167,9 +164,24 @@ public class FlappyBird extends ApplicationAdapter {
         imagemBotaoJogar.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                estadoJogo = 1;
-                imagemBotaoJogar.clearListeners();
-                imagemBotaoReiniciar.clearListeners();
+                if (clicksTelaMenu == true) {
+                    estadoJogo = 1;
+                    clicksTelaGameOver = false;
+                    clicksTelaMenu = false;
+                }
+            }
+        });
+    }
+
+    private void clickBotaoMenu() {
+        imagemBotaoMenu.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                if (clicksTelaGameOver == true) {
+                    estadoJogo = 0;
+                    resetaValores();
+                    clicksTelaMenu = true;
+                }
             }
         });
     }
@@ -178,9 +190,11 @@ public class FlappyBird extends ApplicationAdapter {
         imagemBotaoReiniciar.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                estadoJogo = 1;
-                resetaValores();
-                imagemBotaoReiniciar.clearListeners();
+                if (clicksTelaGameOver == true) {
+                    estadoJogo = 1;
+                    resetaValores();
+                    clicksTelaGameOver = false;
+                }
             }
         });
     }
@@ -199,7 +213,6 @@ public class FlappyBird extends ApplicationAdapter {
 
 
         if (estadoJogo != 0) {
-            imagemBotaoSair.clearListeners();
             velocidadeQueda++; // queda do passaro
             if (((posicaoInicialVertical > 0) || (velocidadeQueda < 0)) && (estadoJogo != 2)) {
                 posicaoInicialVertical = posicaoInicialVertical - velocidadeQueda;
@@ -227,11 +240,6 @@ public class FlappyBird extends ApplicationAdapter {
                 }
 
             }
-            else{//game over
-                   if (Gdx.input.justTouched()){//reinicia o jogo
-
-                }
-            }
 		}
 
 
@@ -248,15 +256,12 @@ public class FlappyBird extends ApplicationAdapter {
                 imagemBotaoJogar.draw(batch,1);//desenhando botao jogar
                 imagemBotaoPlacar.draw(batch, 1);
                 imagemBotaoSair.draw(batch, 1);
-                clickBotaoSair();
             }
             else {
                 if (estadoJogo == 2) {
                     batch.draw(gameOver, larguraDispositivo / 2 - gameOver.getWidth() / 2, alturaDispositivo / 2);
                     imagemBotaoReiniciar.draw(batch ,1);
                     imagemBotaoMenu.draw(batch,1);
-                    clickBotaoReiniciar();
-                    clickBotaoMenu();
                 }
                 fonte.draw(batch, String.valueOf(pontuacao), larguraDispositivo / 2, alturaDispositivo - 50);
             }
@@ -281,7 +286,7 @@ public class FlappyBird extends ApplicationAdapter {
 		if ((Intersector.overlaps(passaroCirculo,retanguloCanoBaixo)) || (Intersector.overlaps(passaroCirculo,retanguloCanoTopo))
         || (posicaoInicialVertical <= 0) || (posicaoInicialVertical >= alturaDispositivo) ){
             estadoJogo = 2;
-
+            clicksTelaGameOver = true;
 		}
 	}
 
