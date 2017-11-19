@@ -13,6 +13,7 @@ import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
@@ -33,6 +34,8 @@ public class FlappyBird extends ApplicationAdapter {
     private  Image imagemBotaoJogar;
     private  Image imagemBotaoReiniciar;
     private  Image imagemBotaoMenu;
+    private  Image imagemBotaoPlacar;
+    private  Image imagemBotaoSair;
 
 	private Circle passaroCirculo;
 	private Rectangle retanguloCanoTopo;
@@ -106,6 +109,17 @@ public class FlappyBird extends ApplicationAdapter {
         clickBotaoJogar();
         stage.addActor(imagemBotaoJogar);
 
+        imagemBotaoPlacar = new Image(new Texture(Gdx.files.internal("botaoplacar.png")));
+        imagemBotaoPlacar.setPosition(250, posicaoInicialVertical + 80);
+        imagemBotaoPlacar.setSize(300, 80);
+        stage.addActor(imagemBotaoPlacar);
+
+        imagemBotaoSair = new Image(new Texture(Gdx.files.internal("botaosair.png")));
+        imagemBotaoSair.setPosition(250, posicaoInicialVertical - 20);
+        imagemBotaoSair.setSize(300, 80);
+        clickBotaoSair();
+        stage.addActor(imagemBotaoSair);
+
         imagemBotaoReiniciar = new Image(new Texture(Gdx.files.internal("botaoreiniciar.png")));
         imagemBotaoReiniciar.setPosition(larguraDispositivo / 2 - imagemBotaoReiniciar.getWidth() / 2, alturaDispositivo / 2 - 100);
         imagemBotaoReiniciar.setSize(300, 80);
@@ -136,6 +150,15 @@ public class FlappyBird extends ApplicationAdapter {
                 clickBotaoJogar();
                 imagemBotaoMenu.clearListeners();
                 imagemBotaoReiniciar.clearListeners();
+            }
+        });
+    }
+
+    private void clickBotaoSair() {
+        imagemBotaoSair.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                Gdx.app.exit();
             }
         });
     }
@@ -176,6 +199,7 @@ public class FlappyBird extends ApplicationAdapter {
 
 
         if (estadoJogo != 0) {
+            imagemBotaoSair.clearListeners();
             velocidadeQueda++; // queda do passaro
             if (((posicaoInicialVertical > 0) || (velocidadeQueda < 0)) && (estadoJogo != 2)) {
                 posicaoInicialVertical = posicaoInicialVertical - velocidadeQueda;
@@ -222,6 +246,9 @@ public class FlappyBird extends ApplicationAdapter {
             if (estadoJogo == 0){
                 batch.draw(logo, 200, posicaoInicialVertical + 300);
                 imagemBotaoJogar.draw(batch,1);//desenhando botao jogar
+                imagemBotaoPlacar.draw(batch, 1);
+                imagemBotaoSair.draw(batch, 1);
+                clickBotaoSair();
             }
             else {
                 if (estadoJogo == 2) {
