@@ -13,7 +13,6 @@ import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
@@ -107,7 +106,16 @@ public class FlappyBird extends ApplicationAdapter {
         imagemBotaoJogar = new Image(new Texture(Gdx.files.internal("botaojogar.png")));
         imagemBotaoJogar.setPosition(250, posicaoInicialVertical + 180);
         imagemBotaoJogar.setSize(300, 80);
-        clickBotaoJogar();
+        imagemBotaoJogar.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                if (clicksTelaMenu == true) {
+                    estadoJogo = 1;
+                    clicksTelaGameOver = false;
+                    clicksTelaMenu = false;
+                }
+            }
+        });
         stage.addActor(imagemBotaoJogar);
 
         imagemBotaoPlacar = new Image(new Texture(Gdx.files.internal("botaoplacar.png")));
@@ -118,19 +126,44 @@ public class FlappyBird extends ApplicationAdapter {
         imagemBotaoSair = new Image(new Texture(Gdx.files.internal("botaosair.png")));
         imagemBotaoSair.setPosition(250, posicaoInicialVertical - 20);
         imagemBotaoSair.setSize(300, 80);
-        clickBotaoSair();
+        imagemBotaoSair.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                if (clicksTelaMenu == true) {
+                    Gdx.app.exit();
+                }
+            }
+        });
         stage.addActor(imagemBotaoSair);
 
         imagemBotaoReiniciar = new Image(new Texture(Gdx.files.internal("botaoreiniciar.png")));
         imagemBotaoReiniciar.setPosition(larguraDispositivo / 2 - imagemBotaoReiniciar.getWidth() / 2, alturaDispositivo / 2 - 100);
         imagemBotaoReiniciar.setSize(300, 80);
-        clickBotaoReiniciar();
+        imagemBotaoReiniciar.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                if (clicksTelaGameOver == true) {
+                    estadoJogo = 1;
+                    resetaValores();
+                    clicksTelaGameOver = false;
+                }
+            }
+        });
         stage.addActor(imagemBotaoReiniciar);
 
         imagemBotaoMenu = new Image(new Texture(Gdx.files.internal("botaomenu.png")));
         imagemBotaoMenu.setPosition(larguraDispositivo / 2 - imagemBotaoReiniciar.getWidth() / 2, alturaDispositivo / 2 - 200);
         imagemBotaoMenu.setSize(300, 80);
-        clickBotaoMenu();
+        imagemBotaoMenu.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                if (clicksTelaGameOver == true) {
+                    estadoJogo = 0;
+                    resetaValores();
+                    clicksTelaMenu = true;
+                }
+            }
+        });
         stage.addActor(imagemBotaoMenu);
 
         Gdx.input.setInputProcessor(stage);
@@ -147,56 +180,6 @@ public class FlappyBird extends ApplicationAdapter {
         else{
             posicaoMovimentoCanoHorizontal = larguraDispositivo - 100;
         }
-    }
-
-    private void clickBotaoSair() {
-        imagemBotaoSair.addListener(new ClickListener(){
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                if (clicksTelaMenu == true) {
-                    Gdx.app.exit();
-                }
-            }
-        });
-    }
-
-    private void clickBotaoJogar() {
-        imagemBotaoJogar.addListener(new ClickListener(){
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                if (clicksTelaMenu == true) {
-                    estadoJogo = 1;
-                    clicksTelaGameOver = false;
-                    clicksTelaMenu = false;
-                }
-            }
-        });
-    }
-
-    private void clickBotaoMenu() {
-        imagemBotaoMenu.addListener(new ClickListener(){
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                if (clicksTelaGameOver == true) {
-                    estadoJogo = 0;
-                    resetaValores();
-                    clicksTelaMenu = true;
-                }
-            }
-        });
-    }
-
-    private void clickBotaoReiniciar() {
-        imagemBotaoReiniciar.addListener(new ClickListener(){
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                if (clicksTelaGameOver == true) {
-                    estadoJogo = 1;
-                    resetaValores();
-                    clicksTelaGameOver = false;
-                }
-            }
-        });
     }
 
     @Override
