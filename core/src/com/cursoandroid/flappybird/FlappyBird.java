@@ -28,7 +28,7 @@ public class FlappyBird extends ApplicationAdapter {
     private  Texture logo;
     private  Texture gameOver;
 
-    private  Stage stage;
+    private  Stage stageBotoes;
     private  Image imagemBotaoJogar;
     private  Image imagemBotaoReiniciar;
     private  Image imagemBotaoMenu;
@@ -40,6 +40,8 @@ public class FlappyBird extends ApplicationAdapter {
 	private Rectangle retanguloCanoBaixo;
 
 	private  Texture fundo;
+    private Image imagemLogo;
+    private Image imagemGameOver;
 	private float variacao = 0;
 	private float velocidadeQueda = 0;
 	private float posicaoInicialVertical = 0;
@@ -53,7 +55,7 @@ public class FlappyBird extends ApplicationAdapter {
     private int pontuacao = 0;
     private boolean marcouPonto = false;
     private boolean clicksTelaMenu = true;
-    private boolean clicksTelaGameOver = false;
+    private boolean clicksTelaGameOver = true;
 
 	//Atributos de configuracao
 	private float larguraDispositivo = 0;
@@ -100,8 +102,16 @@ public class FlappyBird extends ApplicationAdapter {
         camera.position.set(VIRTUAL_WIDTH / 2, VIRTUAL_HEIGHT / 2, 0);//alinhando a camera posicao x,y e z no caso como nao foi usado 3d o memo e 0
         viewport = new StretchViewport(VIRTUAL_WIDTH, VIRTUAL_HEIGHT, camera);//largura, altura e camera utiliazada no viewport resolucao generica para todos so dispositivos
 
-        stage = new Stage();
-        stage.setViewport(viewport);
+        stageBotoes = new Stage();
+        stageBotoes.setViewport(viewport);
+
+        imagemLogo = new Image(new Texture(Gdx.files.internal("logo.png")));
+        imagemLogo.setPosition(200, posicaoInicialVertical + 300);
+        imagemLogo.setSize(386,84);
+
+        imagemGameOver = new Image(new Texture(Gdx.files.internal("game_over.png")));
+        imagemGameOver.setPosition(larguraDispositivo / 2 - gameOver.getWidth() / 2, alturaDispositivo / 2);
+        imagemGameOver.setSize(386,84);
 
         imagemBotaoJogar = new Image(new Texture(Gdx.files.internal("botaojogar.png")));
         imagemBotaoJogar.setPosition(250, posicaoInicialVertical + 180);
@@ -111,17 +121,15 @@ public class FlappyBird extends ApplicationAdapter {
             public void clicked(InputEvent event, float x, float y) {
                 if (clicksTelaMenu == true) {
                     estadoJogo = 1;
-                    clicksTelaGameOver = false;
-                    clicksTelaMenu = false;
+                    stageBotoes.clear();
                 }
             }
         });
-        stage.addActor(imagemBotaoJogar);
 
         imagemBotaoPlacar = new Image(new Texture(Gdx.files.internal("botaoplacar.png")));
         imagemBotaoPlacar.setPosition(250, posicaoInicialVertical + 80);
         imagemBotaoPlacar.setSize(300, 80);
-        stage.addActor(imagemBotaoPlacar);
+        stageBotoes.addActor(imagemBotaoPlacar);
 
         imagemBotaoSair = new Image(new Texture(Gdx.files.internal("botaosair.png")));
         imagemBotaoSair.setPosition(250, posicaoInicialVertical - 20);
@@ -134,7 +142,6 @@ public class FlappyBird extends ApplicationAdapter {
                 }
             }
         });
-        stage.addActor(imagemBotaoSair);
 
         imagemBotaoReiniciar = new Image(new Texture(Gdx.files.internal("botaoreiniciar.png")));
         imagemBotaoReiniciar.setPosition(larguraDispositivo / 2 - imagemBotaoReiniciar.getWidth() / 2, alturaDispositivo / 2 - 100);
@@ -145,11 +152,10 @@ public class FlappyBird extends ApplicationAdapter {
                 if (clicksTelaGameOver == true) {
                     estadoJogo = 1;
                     resetaValores();
-                    clicksTelaGameOver = false;
+                    stageBotoes.clear();
                 }
             }
         });
-        stage.addActor(imagemBotaoReiniciar);
 
         imagemBotaoMenu = new Image(new Texture(Gdx.files.internal("botaomenu.png")));
         imagemBotaoMenu.setPosition(larguraDispositivo / 2 - imagemBotaoReiniciar.getWidth() / 2, alturaDispositivo / 2 - 200);
@@ -160,14 +166,22 @@ public class FlappyBird extends ApplicationAdapter {
                 if (clicksTelaGameOver == true) {
                     estadoJogo = 0;
                     resetaValores();
-                    clicksTelaMenu = true;
                 }
             }
         });
-        stage.addActor(imagemBotaoMenu);
-
-        Gdx.input.setInputProcessor(stage);
+        addActonsToStage();
+        Gdx.input.setInputProcessor(stageBotoes);
 	}
+
+    private void addActonsToStage() {
+        stageBotoes.addActor(imagemBotaoJogar);
+        stageBotoes.addActor(imagemBotaoSair);
+        stageBotoes.addActor(imagemBotaoReiniciar);
+        stageBotoes.addActor(imagemBotaoMenu);
+        stageBotoes.addActor(imagemBotaoPlacar);
+        stageBotoes.addActor(imagemLogo);
+        stageBotoes.addActor(imagemGameOver);
+    }
 
     private void resetaValores() {
         marcouPonto = false;
@@ -225,7 +239,7 @@ public class FlappyBird extends ApplicationAdapter {
             }
 		}
 
-
+        setButtonsVisible(estadoJogo);
 		batch.setProjectionMatrix(camera.combined);//configurando as configuracoes da camera
         batch.begin();//inicia a exibicao das imagnes
 
@@ -234,18 +248,7 @@ public class FlappyBird extends ApplicationAdapter {
             batch.draw(canoBaixo, posicaoMovimentoCanoHorizontal, alturaDispositivo / 2 - canoBaixo.getHeight() - espacoEntreCanos / 2 + alturaEntreCanosRandomica);
             batch.draw(passaros[(int) variacao], 120, posicaoInicialVertical);//desenha o passaro
 
-            if (estadoJogo == 0){
-                batch.draw(logo, 200, posicaoInicialVertical + 300);
-                imagemBotaoJogar.draw(batch,1);//desenhando botao jogar
-                imagemBotaoPlacar.draw(batch, 1);
-                imagemBotaoSair.draw(batch, 1);
-            }
-            else {
-                if (estadoJogo == 2) {
-                    batch.draw(gameOver, larguraDispositivo / 2 - gameOver.getWidth() / 2, alturaDispositivo / 2);
-                    imagemBotaoReiniciar.draw(batch ,1);
-                    imagemBotaoMenu.draw(batch,1);
-                }
+            if (estadoJogo != 0){
                 fonte.draw(batch, String.valueOf(pontuacao), larguraDispositivo / 2, alturaDispositivo - 50);
             }
 
@@ -269,12 +272,46 @@ public class FlappyBird extends ApplicationAdapter {
 		if ((Intersector.overlaps(passaroCirculo,retanguloCanoBaixo)) || (Intersector.overlaps(passaroCirculo,retanguloCanoTopo))
         || (posicaoInicialVertical <= 0) || (posicaoInicialVertical >= alturaDispositivo) ){
             estadoJogo = 2;
-            clicksTelaGameOver = true;
 		}
+
+        if (estadoJogo == 0){//desenha botoes conforme o estado do jogo
+            stageBotoes.act();
+            stageBotoes.draw();
+        }
+        else {
+            if (estadoJogo == 2) {
+                addActonsToStage();
+                stageBotoes.act();
+                stageBotoes.draw();
+            }
+        }
 	}
 
     @Override//sobreescrevendo o metodo resize para colocar a resolucao generica para todos os dispositivos
     public void resize(int width, int height) {
         viewport.update(width, height);
+    }
+
+    public void setButtonsVisible(int estadoJogo){
+        if (estadoJogo == 0){
+            imagemBotaoJogar.setVisible(true);
+            imagemBotaoPlacar.setVisible(true);
+            imagemBotaoSair.setVisible(true);
+            imagemLogo.setVisible(true);
+
+            imagemBotaoReiniciar.setVisible(false);
+            imagemBotaoMenu.setVisible(false);
+            imagemGameOver.setVisible(false);
+        }
+        else{
+            imagemBotaoJogar.setVisible(false);
+            imagemBotaoPlacar.setVisible(false);
+            imagemBotaoSair.setVisible(false);
+            imagemLogo.setVisible(false);
+
+            imagemBotaoReiniciar.setVisible(true);
+            imagemBotaoMenu.setVisible(true);
+            imagemGameOver.setVisible(true);
+        }
     }
 }
