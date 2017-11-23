@@ -54,8 +54,6 @@ public class FlappyBird extends ApplicationAdapter {
     private BitmapFont mensagem;
     private int pontuacao = 0;
     private boolean marcouPonto = false;
-    private boolean clicksTelaMenu = true;
-    private boolean clicksTelaGameOver = true;
 
 	//Atributos de configuracao
 	private float larguraDispositivo = 0;
@@ -80,7 +78,6 @@ public class FlappyBird extends ApplicationAdapter {
 		passaroCirculo = new Circle();//formas para as colisoes
 
 		fundo   = new Texture("fundo.png");
-        logo    = new Texture("logo.png");
 		canoBaixo = new Texture("cano_baixo.png");
 		canoTopo  = new Texture("cano_topo.png");
         gameOver  = new Texture("game_over.png");
@@ -119,10 +116,8 @@ public class FlappyBird extends ApplicationAdapter {
         imagemBotaoJogar.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if (clicksTelaMenu == true) {
-                    estadoJogo = 1;
-                    stageBotoes.clear();
-                }
+                estadoJogo = 1;
+                stageBotoes.clear();
             }
         });
 
@@ -137,9 +132,8 @@ public class FlappyBird extends ApplicationAdapter {
         imagemBotaoSair.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if (clicksTelaMenu == true) {
-                    Gdx.app.exit();
-                }
+                Gdx.app.exit();
+
             }
         });
 
@@ -149,11 +143,10 @@ public class FlappyBird extends ApplicationAdapter {
         imagemBotaoReiniciar.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if (clicksTelaGameOver == true) {
-                    estadoJogo = 1;
-                    resetaValores();
-                    stageBotoes.clear();
-                }
+                estadoJogo = 1;
+                resetaValores();
+                stageBotoes.clear();
+
             }
         });
 
@@ -163,10 +156,9 @@ public class FlappyBird extends ApplicationAdapter {
         imagemBotaoMenu.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if (clicksTelaGameOver == true) {
-                    estadoJogo = 0;
-                    resetaValores();
-                }
+                estadoJogo = 0;
+                resetaValores();
+
             }
         });
         addActonsToStage();
